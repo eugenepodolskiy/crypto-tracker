@@ -1,11 +1,8 @@
 import axios from 'axios'
+import { config } from './config'
 
-// The 5 coins we track
 const COINS = ['bitcoin', 'ethereum', 'solana', 'binancecoin', 'ripple']
 
-const COINGECKO_URL = 'https://api.coingecko.com/api/v3'
-
-// Shape of the price data we get back from CoinGecko
 interface CoinPrice {
     id: string
     symbol: string
@@ -14,13 +11,12 @@ interface CoinPrice {
     price_change_percentage_24h: number
 }
 
-// Shape of the chart data
 interface ChartData {
-    prices: [number, number][]  // [timestamp, price]
+    prices: [number, number][]
 }
 
 export async function getCurrentPrices(): Promise<CoinPrice[]> {
-    const response = await axios.get(`${COINGECKO_URL}/coins/markets`, {
+    const response = await axios.get(`${config.coingeckoUrl}/coins/markets`, {
         params: {
             vs_currency: 'usd',
             ids: COINS.join(','),
@@ -32,11 +28,11 @@ export async function getCurrentPrices(): Promise<CoinPrice[]> {
 
 export async function getCoinChart(coinId: string): Promise<ChartData> {
     const response = await axios.get(
-        `${COINGECKO_URL}/coins/${coinId}/market_chart`,
+        `${config.coingeckoUrl}/coins/${coinId}/market_chart`,
         {
             params: {
                 vs_currency: 'usd',
-                days: 7  // last 7 days
+                days: 7
             }
         }
     )
